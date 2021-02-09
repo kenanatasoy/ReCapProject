@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Business.Concrete
 {
-    public class CarManager:ICarService
+    public class CarManager : ICarService
     {
 
         ICarDal _carDal;
@@ -21,8 +21,15 @@ namespace Business.Concrete
 
         public void Add(Car car)
         {
-            //İş kodları
-            _carDal.Add(car);
+            if (car.DailyPrice > 0)
+            {
+                _carDal.Add(car);
+                Console.WriteLine(car.Id + " id numarasına sahip araba eklendi");
+            }
+            else
+            {
+                Console.WriteLine(car.Id + " id numarasına sahip olacak araba eklenemedi");
+            }
         }
 
         public void Delete(Car car)
@@ -40,7 +47,17 @@ namespace Business.Concrete
         public Car GetByCarId(int carId)
         {
             //İş kodları
-            return _carDal.GetByCarId(carId);
+            return _carDal.GetById(c => c.Id == carId);
+        }
+
+        public List<Car> GetCarsByBrandId(int brandId)
+        {
+            return _carDal.GetAll(c=>c.BrandId == brandId);
+        }
+
+        public List<Car> GetCarsByColorId(int colorId)
+        {
+            return _carDal.GetAll(c => c.ColorId == colorId);
         }
 
         public void Update(Car car)
