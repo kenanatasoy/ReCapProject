@@ -30,8 +30,9 @@ namespace ConsoleUI
             //carManager.Add(new Car { BrandId = 4, ColorId = 3, DailyPrice = 0, ModelYear = 2020, Description = "" });
             //brandManager.Add(new Brand { Name = "GM" });
 
-            //colorManager.Add(new Color {Name="Orange"});
+            //colorManager.Add(new Color {Name="Turuncu"});
 
+            //Console.WriteLine();
 
             Console.WriteLine(carManager.GetByCarId(6).CarId + " id numarasına sahip araba: " + carManager.GetByCarId(6).ModelYear + " Model " + brandManager.GetByBrandId(4).Name);
 

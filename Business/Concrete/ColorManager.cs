@@ -20,7 +20,17 @@ namespace Business.Concrete
 
         public void Add(Color color)
         {
-            _colorDal.Add(color);
+
+            try
+            {
+                _colorDal.Add(color);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.Message);
+                Console.WriteLine(color.Name + " isminde renk zaten var, aynı rengi ekleyemezsiniz");
+            }
+
         }
 
         public void Delete(Color color)
