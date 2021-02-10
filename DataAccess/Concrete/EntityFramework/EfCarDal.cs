@@ -1,62 +1,38 @@
 ﻿using DataAccess.Abstract;
 using Entities.Concrete;
+using Core.DataAccess.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using Entities.DTOs;
 
 namespace DataAccess.Concrete.EntityFramework
 {
-    public class EfCarDal : ICarDal
+    public class EfCarDal : EfEntityRepositoryBase<Car, CarRentalSysContext>, ICarDal
     {
-        public void Add(Car entity)
+        public List<CarDetailDto> GetCarDetails()
         {
-            // IDisposable pattern implemetation of C#
             using (CarRentalSysContext context = new CarRentalSysContext())
             {
-                var addedEntity = context.Entry(entity);
-                addedEntity.State = EntityState.Added;
-                context.SaveChanges();
-            }
-        }
+                
+                var result = from ca in context.Cars
+                             join b in context.Brands
+                             on ca.BrandId equals b.BrandId
+                             join co in context.Colors
+                             on ca.ColorId equals co.ColorId
+                             select new CarDetailDto
+                             {
+                                 CarId = ca.CarId,
+                                 CarBrandName = b.Name,
+                                 CarColorName = co.Name,
+                                 DailyPrice = ca.DailyPrice
+                             };
+                
+                return result.ToList();
 
-        public void Delete(Car entity)
-        {
-            using (CarRentalSysContext context = new CarRentalSysContext())
-            {
-                var deletedEntity = context.Entry(entity);
-                deletedEntity.State = EntityState.Deleted;
-                context.SaveChanges();
-            }
-        }
-
-        public List<Car> GetAll(Expression<Func<Car, bool>> filter = null)
-        {
-            using (CarRentalSysContext context = new CarRentalSysContext())
-            {
-                return filter == null
-                    ? context.Set<Car>().ToList()
-                    : context.Set<Car>().Where(filter).ToList(); 
-            }
-        }
-
-        public Car GetById(Expression<Func<Car, bool>> filter)
-        {
-            using (CarRentalSysContext context = new CarRentalSysContext())
-            {
-                return context.Set<Car>().SingleOrDefault(filter);
-            }
-        }
-
-        public void Update(Car entity)
-        {
-            using (CarRentalSysContext context = new CarRentalSysContext())
-            {
-                var updatedEntity = context.Entry(entity);
-                updatedEntity.State = EntityState.Modified;
-                context.SaveChanges();
             }
         }
     }

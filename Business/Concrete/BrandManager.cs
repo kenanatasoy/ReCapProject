@@ -45,7 +45,7 @@ namespace Business.Concrete
         public Brand GetByBrandId(int brandId)
         {
             //İş kodları
-            return _brandDal.GetById(b => b.Id == brandId);
+            return _brandDal.GetById(b => b.BrandId == brandId);
         }
 
         public void Update(Brand brand)

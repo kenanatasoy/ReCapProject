@@ -9,6 +9,7 @@ namespace Business.Concrete
 {
     public class ColorManager:IColorService
     {
+
         IColorDal _colorDal;
 
         public ColorManager(IColorDal colorDal)
@@ -19,7 +20,7 @@ namespace Business.Concrete
 
         public void Add(Color color)
         {
-            throw new NotImplementedException();
+            _colorDal.Add(color);
         }
 
         public void Delete(Color color)
@@ -32,7 +33,7 @@ namespace Business.Concrete
             throw new NotImplementedException();
         }
 
-        public Color GetByBrandId(int colorId)
+        public Color GetByColorId(int colorId)
         {
             throw new NotImplementedException();
         }
@@ -41,5 +42,6 @@ namespace Business.Concrete
         {
             throw new NotImplementedException();
         }
+
     }
 }

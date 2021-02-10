@@ -1,7 +1,7 @@
 ﻿using Business.Abstract;
 using DataAccess.Abstract;
-using Entities.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -24,11 +24,11 @@ namespace Business.Concrete
             if (car.DailyPrice > 0)
             {
                 _carDal.Add(car);
-                Console.WriteLine(car.Id + " id numarasına sahip araba eklendi");
+                Console.WriteLine(car.CarId + " id numarasına sahip araba eklendi");
             }
             else
             {
-                Console.WriteLine(car.Id + " id numarasına sahip olacak araba eklenemedi");
+                Console.WriteLine(car.CarId + " id numarasına sahip olacak araba eklenemedi");
             }
         }
 
@@ -47,7 +47,12 @@ namespace Business.Concrete
         public Car GetByCarId(int carId)
         {
             //İş kodları
-            return _carDal.GetById(c => c.Id == carId);
+            return _carDal.GetById(c => c.CarId == carId);
+        }
+
+        public List<CarDetailDto> GetCarDetails()
+        {
+            return _carDal.GetCarDetails();
         }
 
         public List<Car> GetCarsByBrandId(int brandId)
