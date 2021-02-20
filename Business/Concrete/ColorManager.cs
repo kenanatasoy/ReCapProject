@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using System;
@@ -18,39 +19,42 @@ namespace Business.Concrete
         }
 
 
-        public void Add(Color color)
+        public IResult Add(Color color)
         {
 
             try
             {
                 _colorDal.Add(color);
+                return new SuccessResult();
             }
             catch (Exception exception)
             {
                 Console.WriteLine(exception.Message);
                 Console.WriteLine(color.Name + " isminde renk zaten var, aynı rengi ekleyemezsiniz");
+                return new ErrorResult();
             }
 
         }
 
-        public void Delete(Color color)
+        public IResult Delete(Color color)
         {
-            throw new NotImplementedException();
+            return new SuccessResult();
         }
 
-        public List<Color> GetAll()
+        public IDataResult<List<Color>> GetAll()
         {
-            throw new NotImplementedException();
+            return new SuccessDataResult<List<Color>>(_colorDal.GetAll());
         }
 
-        public Color GetByColorId(int colorId)
+        public IDataResult<Color> GetByColorId(int colorId)
         {
-            throw new NotImplementedException();
+            return new SuccessDataResult<Color>(_colorDal.GetById(c => c.ColorId == colorId));
         }
 
-        public void Update(Color color)
+        public IResult Update(Color color)
         {
-            throw new NotImplementedException();
+            _colorDal.Update(color);
+            return new SuccessResult();
         }
 
     }

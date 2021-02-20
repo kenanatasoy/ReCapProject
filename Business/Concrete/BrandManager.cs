@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using System;
@@ -17,41 +18,44 @@ namespace Business.Concrete
         }
 
 
-        public void Add(Brand brand)
+        public IResult Add(Brand brand)
         {
             if (brand.Name.Length > 2)
             {
                 _brandDal.Add(brand);
-                Console.WriteLine(brand.Name + " veritabanına başarılı bir şekilde eklendi");
+                return new SuccessResult();
             }
             else
             {
-                Console.WriteLine(brand.Name + " veritabanına eklenemedi");
+                return new ErrorResult();
             }
         }
 
-        public void Delete(Brand brand)
+        public IResult Delete(Brand brand)
         {
             //İş kodları
             _brandDal.Delete(brand);
+            return new SuccessResult();
         }
 
-        public List<Brand> GetAll()
+        public IDataResult<List<Brand>> GetAll()
         {
             //İş kodları
-            return _brandDal.GetAll();
+            return new SuccessDataResult<List<Brand>>(_brandDal.GetAll());
         }
 
-        public Brand GetByBrandId(int brandId)
+        public IDataResult<Brand> GetByBrandId(int brandId)
         {
             //İş kodları
-            return _brandDal.GetById(b => b.BrandId == brandId);
+            
+            return new SuccessDataResult<Brand>(_brandDal.GetById(b => b.BrandId == brandId));
         }
 
-        public void Update(Brand brand)
+        public IResult Update(Brand brand)
         {
             //İş kodları
             _brandDal.Update(brand);
+            return new SuccessResult();
         }
     }
 }
