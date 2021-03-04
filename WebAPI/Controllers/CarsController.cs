@@ -105,7 +105,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getbybrandids")]
-        public IActionResult GetCarsByBrandIds([FromQuery] List<int> ids)
+        public IActionResult GetCarsByBrandIds([FromHeader] List<int> ids)
         {
             var result = _carService.GetCarsByBrandIds(ids);
             if (result.Success)
