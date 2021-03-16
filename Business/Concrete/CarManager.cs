@@ -1,8 +1,10 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.Contants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -19,22 +21,35 @@ namespace Business.Concrete
     {
 
         ICarDal _carDal;
+        IBrandService _brandService;
 
-        public CarManager(ICarDal carDal)
+
+        public CarManager(ICarDal carDal, IBrandService brandService)
         {
             _carDal = carDal;
+            _brandService = brandService;
         }
 
+        [SecuredOperation("car.add, admin")]
         [ValidationAspect(typeof(CarValidator))]
         public IResult Add(Car car)
         {
 
-            ValidationTool.Validate(new CarValidator(), car);
-            
+            //business codes
+            IResult result = BusinessRules.Run(CheckIfCarCountOfBrandCorrect(car.BrandId),
+                CheckIfCarsDescriptionExists(car.Description), CheckIfBrandLimitExceeded());
+
+            if (result != null)
+            {
+                return result;
+            }
+
             _carDal.Add(car);
-            Console.WriteLine(car.CarId + " id numarasına sahip araba eklendi");
-            return new SuccessResult(Messages.CarNameInvalid);
+
+            return new SuccessResult(Messages.CarAdded);
+             
         }
+
 
         public IResult Delete(Car car)
         {
@@ -42,6 +57,7 @@ namespace Business.Concrete
             _carDal.Delete(car);
             return new SuccessResult();
         }
+
 
         public IDataResult<List<Car>> GetAll()
         {
@@ -53,11 +69,13 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(), Messages.CarsListed);
         }
 
+
         public IDataResult<Car> GetByCarId(int carId)
         {
             //İş kodları
             return new SuccessDataResult<Car>(_carDal.GetById(c => c.CarId == carId));
         }
+
 
         public IDataResult<List<Car>> GetCarsByBrandIds(List<int> ids)
         {
@@ -65,21 +83,26 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Car>>(result);
         }
 
+
         public IDataResult<List<CarDetailDto>> GetCarDetails()
         {
             return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails());
         }
+
 
         public IDataResult<List<Car>> GetCarsByBrandId(int brandId)
         {
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(c=>c.BrandId == brandId));
         }
 
+
         public IDataResult<List<Car>> GetCarsByColorId(int colorId)
         {
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.ColorId == colorId));
         }
 
+
+        [ValidationAspect(typeof(CarValidator))]
         public IResult Update(Car car)
         {
             //İş kodları
@@ -87,5 +110,45 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
+
+
+
+
+
+
+
+        private IResult CheckIfCarCountOfBrandCorrect(int brandId)
+        {
+            var result = _carDal.GetAll(c => c.BrandId == brandId).Count;
+            if (result >= 15)
+            {
+                return new ErrorResult(Messages.CarCountError);
+            }
+
+            return new SuccessResult();
+        }
+
+        private IResult CheckIfCarsDescriptionExists(string description)
+        {
+            var result = _carDal.GetAll(c => c.Description == description).Any();
+
+            if (result)
+            {
+                return new ErrorResult(Messages.CarDescriptionError);
+            }
+
+            return new SuccessResult();
+        }
+
+        private IResult CheckIfBrandLimitExceeded()
+        {
+            var result = _brandService.GetAll();
+            if (result.Data.Count > 40)
+            {
+                return new ErrorResult(Messages.BrandLimitExceed);
+            }
+
+            return new SuccessResult();
+        }
     }
 }
