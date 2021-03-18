@@ -143,7 +143,7 @@ namespace Business.Concrete
         }
 
 
-       
+     
         private IResult CheckIfImageExists(int id)
         {
             var result = _carImageDal.GetById(c => c.CarImageId == id);

@@ -2,6 +2,9 @@
 using Business.BusinessAspects.Autofac;
 using Business.Contants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Performance;
+using Core.Aspects.Autofac.Transaction;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Business;
@@ -14,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Transactions;
 
 namespace Business.Concrete
 {
@@ -30,6 +34,9 @@ namespace Business.Concrete
             _brandService = brandService;
         }
 
+
+
+        //[CacheAspect]
         [SecuredOperation("car.add, admin")]
         [ValidationAspect(typeof(CarValidator))]
         public IResult Add(Car car)
@@ -59,6 +66,7 @@ namespace Business.Concrete
         }
 
 
+        [CacheAspect]
         public IDataResult<List<Car>> GetAll()
         {
             if (DateTime.Now.Hour == 22)
@@ -70,6 +78,8 @@ namespace Business.Concrete
         }
 
 
+        [CacheAspect]
+        //[PerformanceAspect(5)]
         public IDataResult<Car> GetByCarId(int carId)
         {
             //İş kodları
@@ -149,6 +159,20 @@ namespace Business.Concrete
             }
 
             return new SuccessResult();
+        }
+
+        [TransactionScopeAspect]
+        public IResult AddTransactionalTest(Car car)
+        {
+            Add(car);
+            if (car.DailyPrice < 200)
+            {
+                throw new Exception("");
+            }
+
+            Add(car);
+
+            return null;
         }
     }
 }
