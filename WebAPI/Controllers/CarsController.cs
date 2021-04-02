@@ -41,7 +41,7 @@ namespace WebAPI.Controllers
         [HttpGet("getbyid")]
         public IActionResult GetById(int id)
         {
-            var result = _carService.GetByCarId(id);
+            var result = _carService.GetCarByCarId(id);
             if (result.Success)
             {
                 return Ok(result);
@@ -115,6 +115,10 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+
+        //
+
+
         [HttpGet("getcardetails")]
         public IActionResult GetCarDetails()
         {
@@ -125,8 +129,49 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result);
         }
-        
 
+        [HttpGet("getcardetailbycarid")]
+        public IActionResult GetCarDetailByCarId(int carId)
+        {
+            IDataResult<List<CarDetailDto>> result = _carService.GetCarDetailByCarId(carId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
 
+        [HttpGet("getcardetailsbybrand")]
+        public IActionResult GetCarDetailsByBrandId(int brandId)
+        {
+            IDataResult<List<CarDetailDto>> result = _carService.GetCarDetailsByBrandId(brandId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("getcardetailsbycolor")]
+        public IActionResult GetCarDetailsByColorId(int colorId)
+        {
+            IDataResult<List<CarDetailDto>> result = _carService.GetCarDetailsByColorId(colorId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("getcardetailsbycolorandbybrand")]
+        public IActionResult GetCarDetailsByColorIdAndByBrandId(int colorId, int brandId)
+        {
+            IDataResult<List<CarDetailDto>> result = _carService.GetCarDetailsByColorIdAndByBrandId(colorId, brandId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
     }
 }

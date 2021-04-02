@@ -31,7 +31,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("delete")]
+        [HttpPost("delete")]
         public IActionResult Delete(Customer customer)
         {
             var result = _customerService.Delete(customer);
@@ -53,8 +53,8 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("getall")]
-        public IActionResult GetAll(Customer customer)
+        [HttpGet("getall")]
+        public IActionResult GetAll()
         {
             var result = _customerService.GetAll();
             if (result.Success)

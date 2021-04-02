@@ -35,7 +35,7 @@ namespace ConsoleUI
             
             foreach (var rentDetail in rentalManager.GetRentalDetails().Data)
             {
-                Console.WriteLine(rentDetail.CustomerName + " müşterisi " + rentDetail.CarName + " arabası " + rentDetail.RentDate + " tarihinde kiralandı");
+                Console.WriteLine(rentDetail.CustomerName + " müşterisi " + rentDetail.BrandName + " arabası " + rentDetail.RentDate + " tarihinde kiralandı");
             }
 
             Console.WriteLine();
